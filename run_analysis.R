@@ -44,6 +44,15 @@ library("data.table")
 
 resdt <- data.table(res)
 
-#melting and dcasting for getting databy activities and subjects
+##melting and dcasting for getting databy activities and subjects
 resMelted  <- melt(res, id=c("activityname", "subject"))
 resDcasted <- dcast (resMelted, activityname + subject~variable, mean)
+
+
+##changing column names to be more readable
+correctNamesFun <- function(incorrect) {
+  tolower (gsub("-",".",sub("\\(\\)", "", incorrect)))
+}
+
+colnames(resDcasted) <- sapply(as.list(colnames(resDcasted)), correctNamesFun)
+write.table(resDcasted, "tidy_new.txt", sep="\t", row.names=FALSE)
